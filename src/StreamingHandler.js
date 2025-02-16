@@ -1,7 +1,8 @@
 export default class StreamingHandler {
-  constructor(streamListener, recordWriter) {
+  constructor(streamListener, recordWriter, mappingStrategy) {
     this.streamListener = streamListener;
     this.recordWriter = recordWriter;
+    this.mappingStrategy = mappingStrategy;
   }
 
   start() {
@@ -11,7 +12,7 @@ export default class StreamingHandler {
   }
 
   _handleGift(gift) {
-    this.recordWriter.write(gift);
+    this.recordWriter.write(this.mappingStrategy.map(gift));
   }
 
   _handleChat(chat) {

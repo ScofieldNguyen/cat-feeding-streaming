@@ -6,6 +6,7 @@
   "type": "module",
   "dependencies": {
     "fs": "^0.0.1-security",
+    "googleapis": "^144.0.0",
     "tiktok-live-connector": "^1.2.3"
   },
   "devDependencies": {

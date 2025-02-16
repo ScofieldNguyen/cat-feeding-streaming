@@ -5,7 +5,7 @@ describe("StreamingHandler", () => {
   let streamHandler;
   let mockStreamListener;
   let mockRecordWriter;
-
+  let giftMappingStrategy;
   beforeEach(() => {
     mockStreamListener = {
       connect: jest.fn(),
@@ -18,7 +18,17 @@ describe("StreamingHandler", () => {
       write: jest.fn(),
     };
 
-    streamHandler = new StreamingHandler(mockStreamListener, mockRecordWriter);
+    giftMappingStrategy = {
+      map: (gift) => ({
+        value: 1,
+      }),
+    };
+
+    streamHandler = new StreamingHandler(
+      mockStreamListener,
+      mockRecordWriter,
+      giftMappingStrategy
+    );
   });
 
   it("should call connect on stream listener when start is called", async () => {
@@ -39,7 +49,7 @@ describe("StreamingHandler", () => {
     expect(() => streamHandler.start()).toThrow("Connection failed");
   });
 
-  it("should write data to record writer when onGift is called", () => {
+  it("should write mapped data to record writer when onGift is called", () => {
     const giftData = {
       id: "gift123",
       userId: "user456",
@@ -51,9 +61,15 @@ describe("StreamingHandler", () => {
     };
 
     const fakeStreamListener = new FakeStreamingListener();
-    streamHandler = new StreamingHandler(fakeStreamListener, mockRecordWriter);
+    streamHandler = new StreamingHandler(
+      fakeStreamListener,
+      mockRecordWriter,
+      giftMappingStrategy
+    );
     streamHandler.start();
     fakeStreamListener.triggerGift(giftData);
-    expect(mockRecordWriter.write).toBeCalledWith(giftData);
+    expect(mockRecordWriter.write).toBeCalledWith(
+      giftMappingStrategy.map(giftData)
+    );
   });
 });

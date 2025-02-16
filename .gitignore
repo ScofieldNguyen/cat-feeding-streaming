@@ -42,3 +42,4 @@ temp/
 # Optional: Test coverage output
 coverage/
 .nyc_output/
+google-services.json
